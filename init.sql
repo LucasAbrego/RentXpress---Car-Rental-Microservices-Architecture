@@ -1,8 +1,21 @@
-create database rent_xpress_user;
-create database rent_xpress_reservation;
-create database rent_xpress_vehicle;
+CREATE DATABASE IF NOT EXISTS rent_xpress_user;
+CREATE DATABASE IF NOT EXISTS rent_xpress_reservation;
+CREATE DATABASE IF NOT EXISTS rent_xpress_vehicle;
 
-	use rent_xpress_vehicle;
+USE rent_xpress_vehicle;
+CREATE TABLE IF NOT EXISTS vehicle (
+    id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+    availability BIT(1),
+    color VARCHAR(255),
+    description VARCHAR(255),
+    image_url VARCHAR(255),
+    license_plate VARCHAR(255),
+    make VARCHAR(255),
+    model VARCHAR(255),
+    price_per_day DOUBLE,
+    year INT(11)
+);
+
 	INSERT INTO vehicle (make, model, year, color, license_plate, price_per_day, availability, description, image_url)
 	VALUES 
 	('Toyota', 'Corolla', 2020, 'White', 'ABC1234', 45.99, true, 'A reliable and fuel-efficient sedan.', 'https://example.com/toyota_corolla.jpg'),
@@ -26,9 +39,19 @@ create database rent_xpress_vehicle;
 	('Jaguar', 'F-Type', 2021, 'Red', 'CDE2345', 210.00, true, 'A high-performance luxury coupe.', 'https://example.com/jaguar_ftype.jpg'),
 	('Ferrari', '488 GTB', 2022, 'Red', 'FGH6789', 500.00, true, 'Exotic supercar with blistering performance.', 'https://example.com/ferrari_488gtb.jpg');
 
-select * from vehicle;
 
-use rent_xpress_user;
+USE rent_xpress_user;
+
+CREATE TABLE IF NOT EXISTS user (
+    id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+    address VARCHAR(255),
+    email VARCHAR(255),
+    full_name VARCHAR(255),
+    password VARCHAR(255),
+    phone_number VARCHAR(255),
+    registration_date VARCHAR(255),
+    username VARCHAR(255)
+
 INSERT INTO user (address, email, full_name, password, phone_number, registration_date, username)
 VALUES
 ('123 Main St', 'john.doe@gmail.com', 'John Doe', 'password123', '555-1234', '2023-01-01', 'johndoe'),
@@ -41,4 +64,29 @@ VALUES
 ('505 Elm St', 'olivia.wilson@hotmail.com', 'Olivia Wilson', 'oliviapass', '555-1357', '2023-08-25', 'oliviawilson'),
 ('606 Spruce St', 'william.martinez@outlook.com', 'William Martinez', 'williampass', '555-8642', '2023-09-13', 'williammartinez'),
 ('707 Ash St', 'sophia.garcia@icloud.com', 'Sophia Garcia', 'sophiapass', '555-9753', '2023-10-02', 'sophiagarcia');
-select * from user;
+
+
+USE rent_xpress_reservation;
+
+CREATE TABLE IF NOT EXISTS reservation (
+    id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+    end_date_time DATETIME(6),
+    start_date_time DATETIME(6),
+    status VARCHAR(255),
+    total_amount DOUBLE,
+    user_id BIGINT(20),
+    vehicle_id BIGINT(20)
+);
+
+INSERT INTO reservation (end_date_time, start_date_time, status, total_amount, user_id, vehicle_id)
+VALUES
+('2024-09-20 10:00:00', '2024-09-15 10:00:00', 'Booked', 200.00, 1, 1),
+('2024-09-25 14:00:00', '2024-09-20 14:00:00', 'Completed', 190.00, 2, 2),
+('2024-09-10 19:00:00', '2024-09-28 09:00:00', 'Cancelled', 120.00, 3, 3),
+('2024-10-05 12:00:00', '2024-10-02 12:00:00', 'Booked', 250.00, 4, 4),
+('2024-10-10 16:00:00', '2024-10-07 16:00:00', 'Completed', 350.00, 5, 5);
+('2024-11-22 15:00:00', '2024-09-15 10:00:00', 'Booked', 200.00, 1, 1),
+('2024-03-27 14:00:00', '2024-09-20 14:00:00', 'Completed', 110.00, 2, 2),
+('2024-04-23 19:00:00', '2024-09-28 09:00:00', 'Cancelled', 320.00, 3, 3),
+('2024-11-07 23:00:00', '2024-10-02 12:00:00', 'Booked', 250.00, 4, 4),
+('2024-12-10 16:00:00', '2024-10-07 16:00:00', 'Completed', 350.00, 5, 5);

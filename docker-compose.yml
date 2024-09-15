@@ -1,3 +1,5 @@
+version: '2.4'
+
 services:
   eureka-server:
     build: eureka-server
@@ -14,6 +16,8 @@ services:
       - "9003:9003"
     networks:
       - 'rentxpress-network'
+    depends_on:
+      - mysql
 
   vehicles-service:
     build: vehicles-service
@@ -22,6 +26,8 @@ services:
       - "9002:9002"
     networks:
       - 'rentxpress-network'
+    depends_on:
+      - mysql
 
   reservations-service:
     build: reservations-service
@@ -30,6 +36,8 @@ services:
       - "9001:9001"
     networks:
       - 'rentxpress-network'
+    depends_on:
+      - mysql
 
   api-gateway:
     build: api-gateway
@@ -38,6 +46,20 @@ services:
       - "431:431"
     networks:
       - 'rentxpress-network'
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: rent_xpress
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    ports:
+      - "3306:3306"
+    networks:
+      - 'rentxpress-network'
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
 networks:
   rentxpress-network:
