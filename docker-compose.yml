@@ -1,65 +1,68 @@
-version: '2.4'
+version: '3.8'
 
 services:
-  eureka-server:
-    build: eureka-server
-    mem_limit: 512m
-    ports:
-      - "8761:8761"
-    networks:
-      - 'rentxpress-network'
-
-  users-service:
-    build: users-service
-    mem_limit: 512m
-    ports:
-      - "9003:9003"
-    networks:
-      - 'rentxpress-network'
-    depends_on:
-      - mysql
-
-  vehicles-service:
-    build: vehicles-service
-    mem_limit: 512m
-    ports:
-      - "9002:9002"
-    networks:
-      - 'rentxpress-network'
-    depends_on:
-      - mysql
-
-  reservations-service:
-    build: reservations-service
-    mem_limit: 512m
-    ports:
-      - "9001:9001"
-    networks:
-      - 'rentxpress-network'
-    depends_on:
-      - mysql
-
-  api-gateway:
-    build: api-gateway
-    mem_limit: 512m
-    ports:
-      - "431:431"
-    networks:
-      - 'rentxpress-network'
-
-  mysql:
+  mysql-db:
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: rent_xpress
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
     ports:
       - "3306:3306"
-    networks:
-      - 'rentxpress-network'
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - rentxpress-network
+
+  users-service:
+    build: users-service
+    depends_on:
+      - mysql-db
+      - eureka-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    ports:
+      - "9003:9003"
+    networks:
+      - rentxpress-network
+
+  reservations-service:
+    build: reservations-service
+    depends_on:
+      - mysql-db
+      - eureka-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    ports:
+      - "9001:9001"
+    networks:
+      - rentxpress-network
+
+  vehicles-service:
+    build: vehicles-service
+    depends_on:
+      - mysql-db
+      - eureka-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    ports:
+      - "9002:9002"
+    networks:
+      - rentxpress-network
+
+  eureka-server:
+    build: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - rentxpress-network
+
+  api-gateway:
+    build: api-gateway
+    depends_on:
+      - eureka-server
+    ports:
+      - "431:431"
+    networks:
+      - rentxpress-network
 
 networks:
   rentxpress-network:
